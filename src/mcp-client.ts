@@ -5,7 +5,7 @@ import { nodeFetch } from "./fetch";
 
 const MCP_SERVER_URL = "https://mcp.granola.ai/mcp";
 
-export type SyncTimeRange = "this_week" | "last_week" | "last_30_days";
+export type SyncTimeRange = "this_week" | "last_week" | "last_30_days" | "last_5_years";
 
 export class GranolaMcpClient {
 	private client: Client | null = null;

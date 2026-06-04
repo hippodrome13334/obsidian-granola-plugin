@@ -28,6 +28,7 @@ const SYNC_TIME_RANGE_OPTIONS: Record<SyncTimeRange, string> = {
 	this_week: "This week",
 	last_week: "Last week",
 	last_30_days: "Last 30 days",
+	last_5_years: "Last 5 years",
 };
 
 export interface GranolaSyncSettings {
