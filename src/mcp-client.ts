@@ -7,6 +7,29 @@ const MCP_SERVER_URL = "https://mcp.granola.ai/mcp";
 
 export type SyncTimeRange = "this_week" | "last_week" | "last_30_days" | "last_5_years";
 
+/**
+ * Build the list_meetings arguments.
+ *
+ * The Granola MCP server's time_range enum only knows "this_week",
+ * "last_week", "last_30_days", and "custom" (with custom_start/custom_end
+ * dates) — it has no "last_5_years" value. That option is a plugin-only
+ * convenience, translated here into "custom" with a computed start date
+ * so the server actually understands the request.
+ */
+export function buildListMeetingsArgs(timeRange: SyncTimeRange): Record<string, unknown> {
+	if (timeRange === "last_5_years") {
+		const now = new Date();
+		const start = new Date(now);
+		start.setFullYear(start.getFullYear() - 5);
+		return {
+			time_range: "custom",
+			custom_start: start.toISOString().slice(0, 10),
+			custom_end: now.toISOString().slice(0, 10),
+		};
+	}
+	return { time_range: timeRange };
+}
+
 export class GranolaMcpClient {
 	private client: Client | null = null;
 	private authProvider: GranolaAuthProvider;
@@ -59,7 +82,7 @@ export class GranolaMcpClient {
 	}
 
 	async listMeetings(timeRange: SyncTimeRange): Promise<string> {
-		return this.callToolText("list_meetings", { time_range: timeRange });
+		return this.callToolText("list_meetings", buildListMeetingsArgs(timeRange));
 	}
 
 	async getMeetings(meetingIds: string[]): Promise<string> {
